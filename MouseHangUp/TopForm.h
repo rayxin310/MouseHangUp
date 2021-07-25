@@ -134,7 +134,7 @@ namespace MouseHangUp {
 			// 
 			// btn_start
 			// 
-			this->btn_start->BackColor = System::Drawing::SystemColors::Highlight;
+			this->btn_start->BackColor = System::Drawing::Color::LimeGreen;
 			this->btn_start->Cursor = System::Windows::Forms::Cursors::Hand;
 			this->btn_start->Font = (gcnew System::Drawing::Font(L"·L³n¥¿¶ÂÅé", 14.25F, System::Drawing::FontStyle::Regular, System::Drawing::GraphicsUnit::Point,
 				static_cast<System::Byte>(136)));

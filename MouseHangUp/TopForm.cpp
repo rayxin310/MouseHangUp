@@ -86,7 +86,7 @@ namespace MouseHangUp
 		{
 			this->Process_backgroundWorker->CancelAsync();
 			this->btn_start->Enabled = true;
-			this->btn_start->BackColor = System::Drawing::SystemColors::Highlight;
+			this->btn_start->BackColor = System::Drawing::Color::LimeGreen;
 			this->gb_time_set->Enabled = true;
 			this->lb_status->Text = "Interrupt";
 			MessageBox::Show("Interrupt !!");
@@ -114,7 +114,7 @@ namespace MouseHangUp
 			MessageBox::Show("End !!");
 			this->TopToolStripProgressBar->Value = 0;
 			this->btn_start->Enabled = true;
-			this->btn_start->BackColor = System::Drawing::SystemColors::Highlight;
+			this->btn_start->BackColor = System::Drawing::Color::LimeGreen;
 			this->gb_time_set->Enabled = true;
 			this->lb_status->Text = "Ready";
 		}
