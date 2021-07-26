@@ -5,7 +5,14 @@ namespace MouseHangUp
 	{
 		Start_Process_backgroundWorker();
 	}
-
+	System::Void TopForm::RandomTrackBar_Scroll(System::Object^ sender, System::EventArgs^ e) 
+	{
+		this->lb_status->Text = "Range:"+ this->RandomTrackBar->Value;
+	}
+	System::Void TopForm::SpeedTrackBar_Scroll(System::Object^ sender, System::EventArgs^ e)
+	{
+		this->lb_status->Text = "Speed:" + this->SpeedTrackBar->Value;
+	}
 	System::Void TopForm::Mouse_Fuzzy_Control_function(int process_time)
 	{
 		
@@ -17,6 +24,8 @@ namespace MouseHangUp
 		int now_time;
 		int time_left;
 		bool turn_back = true;
+		int random_val = this->mouse_random_value;
+		int speed = this->mouse_process_speed;
 		Random^ rnd_x = gcnew Random();
 		System::Threading::Thread::Sleep(50);//需間隔15ms以上 random seed 才會不同
 		Random^ rnd_y = gcnew Random();
@@ -28,9 +37,9 @@ namespace MouseHangUp
 			POINT position;
 			IOControl::GetMousePosition(&position);
 			//mouse_event(MOUSEEVENTF_LEFTDOWN, position.x, position.y, 0, 0);
-			System::Threading::Thread::Sleep(10);
-			x_delta = rnd_x->Next(-10, 11);
-			y_delta = rnd_y->Next(-10, 11);
+			//System::Threading::Thread::Sleep(10);
+			x_delta = rnd_x->Next(-1 * random_val, random_val + 1);
+			y_delta = rnd_y->Next(-1 * random_val, random_val + 1);
 			x_get = position.x;
 			y_get = position.y;
 			if ((x_get != x_set && y_get != y_set) || turn_back)
@@ -59,7 +68,8 @@ namespace MouseHangUp
 			percentage = (now_time * 100) / process_time;
 			
 			this->Process_backgroundWorker->ReportProgress(percentage, "Set:(" + x_set + "," + y_set + ")");
-			System::Threading::Thread::Sleep(200);
+			
+			System::Threading::Thread::Sleep(20*(10 - speed));
 			//mouse_event(MOUSEEVENTF_LEFTDOWN, x_set, y_set, 0, 0);
 		}
 		loop_timer->Stop();
@@ -75,6 +85,8 @@ namespace MouseHangUp
 		this->btn_start->BackColor = System::Drawing::Color::Orange;
 		this->gb_time_set->Enabled = false;
 		this->Setting_time_transfer();
+		this->mouse_random_value = this->RandomTrackBar->Value;
+		this->mouse_process_speed = this->SpeedTrackBar->Value;
 		this->UI_Update_LB_Text_Control = gcnew InvokeDelegate_LB_Control_Text(&LB_text_update);
 		if (this->Process_backgroundWorker->IsBusy != true) {
 			this->Process_backgroundWorker->RunWorkerAsync();

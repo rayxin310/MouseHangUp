@@ -50,7 +50,8 @@ namespace MouseHangUp {
 	private: System::Windows::Forms::TextBox^ tb_set_sec;
 	private: System::Windows::Forms::GroupBox^ gb_time_set;
 	public: int Program_process_time;
-
+	public: int mouse_random_value;
+	public: int mouse_process_speed;
 	public:
 
 	private: System::Windows::Forms::TextBox^ tb_set_min;
@@ -73,6 +74,10 @@ namespace MouseHangUp {
 
 	private: System::Windows::Forms::ToolStripLabel^ lb_BackgroundWorker_status;
 	private: System::Windows::Forms::ToolStripSeparator^ toolStripSeparator1;
+	private: System::Windows::Forms::TrackBar^ RandomTrackBar;
+	private: System::Windows::Forms::TrackBar^ SpeedTrackBar;
+	private: System::Windows::Forms::GroupBox^ gb_mouse_range;
+	private: System::Windows::Forms::GroupBox^ gb_mouse_speed;
 
 	private: System::Windows::Forms::Label^ lb_remark;
 
@@ -115,13 +120,21 @@ namespace MouseHangUp {
 			this->lb_remark = (gcnew System::Windows::Forms::Label());
 			this->TopToolStrip = (gcnew System::Windows::Forms::ToolStrip());
 			this->TopToolStripProgressBar = (gcnew System::Windows::Forms::ToolStripProgressBar());
-			this->lb_BackgroundWorker_status = (gcnew System::Windows::Forms::ToolStripLabel());
 			this->toolStripSeparator1 = (gcnew System::Windows::Forms::ToolStripSeparator());
+			this->lb_BackgroundWorker_status = (gcnew System::Windows::Forms::ToolStripLabel());
+			this->RandomTrackBar = (gcnew System::Windows::Forms::TrackBar());
+			this->SpeedTrackBar = (gcnew System::Windows::Forms::TrackBar());
+			this->gb_mouse_range = (gcnew System::Windows::Forms::GroupBox());
+			this->gb_mouse_speed = (gcnew System::Windows::Forms::GroupBox());
 			this->gb_time_set->SuspendLayout();
 			this->gb_sec->SuspendLayout();
 			this->gb_hour->SuspendLayout();
 			this->gb_min->SuspendLayout();
 			this->TopToolStrip->SuspendLayout();
+			(cli::safe_cast<System::ComponentModel::ISupportInitialize^>(this->RandomTrackBar))->BeginInit();
+			(cli::safe_cast<System::ComponentModel::ISupportInitialize^>(this->SpeedTrackBar))->BeginInit();
+			this->gb_mouse_range->SuspendLayout();
+			this->gb_mouse_speed->SuspendLayout();
 			this->SuspendLayout();
 			// 
 			// Process_backgroundWorker
@@ -302,7 +315,7 @@ namespace MouseHangUp {
 			this->lb_remark->Font = (gcnew System::Drawing::Font(L"·L³n¥¿¶ÂÅé", 8.25F, System::Drawing::FontStyle::Regular, System::Drawing::GraphicsUnit::Point,
 				static_cast<System::Byte>(136)));
 			this->lb_remark->ForeColor = System::Drawing::Color::Red;
-			this->lb_remark->Location = System::Drawing::Point(12, 137);
+			this->lb_remark->Location = System::Drawing::Point(98, 183);
 			this->lb_remark->Name = L"lb_remark";
 			this->lb_remark->Size = System::Drawing::Size(187, 15);
 			this->lb_remark->TabIndex = 6;
@@ -316,7 +329,7 @@ namespace MouseHangUp {
 				this->TopToolStripProgressBar,
 					this->toolStripSeparator1, this->lb_BackgroundWorker_status
 			});
-			this->TopToolStrip->Location = System::Drawing::Point(0, 153);
+			this->TopToolStrip->Location = System::Drawing::Point(0, 203);
 			this->TopToolStrip->Name = L"TopToolStrip";
 			this->TopToolStrip->Padding = System::Windows::Forms::Padding(0);
 			this->TopToolStrip->Size = System::Drawing::Size(297, 25);
@@ -330,22 +343,67 @@ namespace MouseHangUp {
 			this->TopToolStripProgressBar->Size = System::Drawing::Size(190, 22);
 			this->TopToolStripProgressBar->Step = 1;
 			// 
+			// toolStripSeparator1
+			// 
+			this->toolStripSeparator1->Name = L"toolStripSeparator1";
+			this->toolStripSeparator1->Size = System::Drawing::Size(6, 25);
+			// 
 			// lb_BackgroundWorker_status
 			// 
 			this->lb_BackgroundWorker_status->Name = L"lb_BackgroundWorker_status";
 			this->lb_BackgroundWorker_status->Size = System::Drawing::Size(41, 22);
 			this->lb_BackgroundWorker_status->Text = L"Status";
 			// 
-			// toolStripSeparator1
+			// RandomTrackBar
 			// 
-			this->toolStripSeparator1->Name = L"toolStripSeparator1";
-			this->toolStripSeparator1->Size = System::Drawing::Size(6, 25);
+			this->RandomTrackBar->AutoSize = false;
+			this->RandomTrackBar->Location = System::Drawing::Point(6, 18);
+			this->RandomTrackBar->Minimum = 1;
+			this->RandomTrackBar->Name = L"RandomTrackBar";
+			this->RandomTrackBar->Size = System::Drawing::Size(121, 22);
+			this->RandomTrackBar->TabIndex = 9;
+			this->RandomTrackBar->Value = 6;
+			this->RandomTrackBar->Scroll += gcnew System::EventHandler(this, &TopForm::RandomTrackBar_Scroll);
+			// 
+			// SpeedTrackBar
+			// 
+			this->SpeedTrackBar->AutoSize = false;
+			this->SpeedTrackBar->LargeChange = 1;
+			this->SpeedTrackBar->Location = System::Drawing::Point(6, 18);
+			this->SpeedTrackBar->Name = L"SpeedTrackBar";
+			this->SpeedTrackBar->RightToLeftLayout = true;
+			this->SpeedTrackBar->Size = System::Drawing::Size(121, 22);
+			this->SpeedTrackBar->TabIndex = 10;
+			this->SpeedTrackBar->Value = 5;
+			this->SpeedTrackBar->Scroll += gcnew System::EventHandler(this, &TopForm::SpeedTrackBar_Scroll);
+			// 
+			// gb_mouse_range
+			// 
+			this->gb_mouse_range->Controls->Add(this->RandomTrackBar);
+			this->gb_mouse_range->Location = System::Drawing::Point(12, 134);
+			this->gb_mouse_range->Name = L"gb_mouse_range";
+			this->gb_mouse_range->Size = System::Drawing::Size(133, 46);
+			this->gb_mouse_range->TabIndex = 11;
+			this->gb_mouse_range->TabStop = false;
+			this->gb_mouse_range->Text = L"Range";
+			// 
+			// gb_mouse_speed
+			// 
+			this->gb_mouse_speed->Controls->Add(this->SpeedTrackBar);
+			this->gb_mouse_speed->Location = System::Drawing::Point(152, 134);
+			this->gb_mouse_speed->Name = L"gb_mouse_speed";
+			this->gb_mouse_speed->Size = System::Drawing::Size(133, 46);
+			this->gb_mouse_speed->TabIndex = 12;
+			this->gb_mouse_speed->TabStop = false;
+			this->gb_mouse_speed->Text = L"Speed";
 			// 
 			// TopForm
 			// 
 			this->AutoScaleDimensions = System::Drawing::SizeF(7, 16);
 			this->AutoScaleMode = System::Windows::Forms::AutoScaleMode::Font;
-			this->ClientSize = System::Drawing::Size(297, 178);
+			this->ClientSize = System::Drawing::Size(297, 228);
+			this->Controls->Add(this->gb_mouse_speed);
+			this->Controls->Add(this->gb_mouse_range);
 			this->Controls->Add(this->TopToolStrip);
 			this->Controls->Add(this->lb_remark);
 			this->Controls->Add(this->lb_status);
@@ -367,6 +425,10 @@ namespace MouseHangUp {
 			this->gb_min->PerformLayout();
 			this->TopToolStrip->ResumeLayout(false);
 			this->TopToolStrip->PerformLayout();
+			(cli::safe_cast<System::ComponentModel::ISupportInitialize^>(this->RandomTrackBar))->EndInit();
+			(cli::safe_cast<System::ComponentModel::ISupportInitialize^>(this->SpeedTrackBar))->EndInit();
+			this->gb_mouse_range->ResumeLayout(false);
+			this->gb_mouse_speed->ResumeLayout(false);
 			this->ResumeLayout(false);
 			this->PerformLayout();
 
@@ -391,5 +453,7 @@ namespace MouseHangUp {
 	private: System::Void tb_set_sec_TextChanged(System::Object^ sender, System::EventArgs^ e);
 	private: System::Void tb_set_min_TextChanged(System::Object^ sender, System::EventArgs^ e);
 	private: System::Void tb_set_hr_TextChanged(System::Object^ sender, System::EventArgs^ e);
+	private: System::Void RandomTrackBar_Scroll(System::Object^ sender, System::EventArgs^ e);
+	private: System::Void SpeedTrackBar_Scroll(System::Object^ sender, System::EventArgs^ e);
 };
 }
