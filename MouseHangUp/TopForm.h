@@ -52,7 +52,6 @@ namespace MouseHangUp {
 	public: int Program_process_time;
 	public: int mouse_random_value;
 	public: int mouse_process_speed;
-	public:
 
 	private: System::Windows::Forms::TextBox^ tb_set_min;
 	private: System::Windows::Forms::Button^ btn_increase_min_low;
@@ -78,6 +77,11 @@ namespace MouseHangUp {
 	private: System::Windows::Forms::TrackBar^ SpeedTrackBar;
 	private: System::Windows::Forms::GroupBox^ gb_mouse_range;
 	private: System::Windows::Forms::GroupBox^ gb_mouse_speed;
+	private: System::Windows::Forms::GroupBox^ gb_function;
+	private: System::Windows::Forms::RadioButton^ rb_fuzzy;
+	private: System::Windows::Forms::RadioButton^ rb_record;
+	private: System::Windows::Forms::RadioButton^ rb_play;
+
 
 	private: System::Windows::Forms::Label^ lb_remark;
 
@@ -126,6 +130,10 @@ namespace MouseHangUp {
 			this->SpeedTrackBar = (gcnew System::Windows::Forms::TrackBar());
 			this->gb_mouse_range = (gcnew System::Windows::Forms::GroupBox());
 			this->gb_mouse_speed = (gcnew System::Windows::Forms::GroupBox());
+			this->gb_function = (gcnew System::Windows::Forms::GroupBox());
+			this->rb_record = (gcnew System::Windows::Forms::RadioButton());
+			this->rb_fuzzy = (gcnew System::Windows::Forms::RadioButton());
+			this->rb_play = (gcnew System::Windows::Forms::RadioButton());
 			this->gb_time_set->SuspendLayout();
 			this->gb_sec->SuspendLayout();
 			this->gb_hour->SuspendLayout();
@@ -135,6 +143,7 @@ namespace MouseHangUp {
 			(cli::safe_cast<System::ComponentModel::ISupportInitialize^>(this->SpeedTrackBar))->BeginInit();
 			this->gb_mouse_range->SuspendLayout();
 			this->gb_mouse_speed->SuspendLayout();
+			this->gb_function->SuspendLayout();
 			this->SuspendLayout();
 			// 
 			// Process_backgroundWorker
@@ -315,7 +324,7 @@ namespace MouseHangUp {
 			this->lb_remark->Font = (gcnew System::Drawing::Font(L"·L³n¥¿¶ÂÅé", 8.25F, System::Drawing::FontStyle::Regular, System::Drawing::GraphicsUnit::Point,
 				static_cast<System::Byte>(136)));
 			this->lb_remark->ForeColor = System::Drawing::Color::Red;
-			this->lb_remark->Location = System::Drawing::Point(98, 183);
+			this->lb_remark->Location = System::Drawing::Point(98, 247);
 			this->lb_remark->Name = L"lb_remark";
 			this->lb_remark->Size = System::Drawing::Size(187, 15);
 			this->lb_remark->TabIndex = 6;
@@ -329,7 +338,7 @@ namespace MouseHangUp {
 				this->TopToolStripProgressBar,
 					this->toolStripSeparator1, this->lb_BackgroundWorker_status
 			});
-			this->TopToolStrip->Location = System::Drawing::Point(0, 203);
+			this->TopToolStrip->Location = System::Drawing::Point(0, 262);
 			this->TopToolStrip->Name = L"TopToolStrip";
 			this->TopToolStrip->Padding = System::Windows::Forms::Padding(0);
 			this->TopToolStrip->Size = System::Drawing::Size(297, 25);
@@ -397,11 +406,55 @@ namespace MouseHangUp {
 			this->gb_mouse_speed->TabStop = false;
 			this->gb_mouse_speed->Text = L"Speed";
 			// 
+			// gb_function
+			// 
+			this->gb_function->Controls->Add(this->rb_play);
+			this->gb_function->Controls->Add(this->rb_record);
+			this->gb_function->Controls->Add(this->rb_fuzzy);
+			this->gb_function->Location = System::Drawing::Point(12, 186);
+			this->gb_function->Name = L"gb_function";
+			this->gb_function->Size = System::Drawing::Size(272, 58);
+			this->gb_function->TabIndex = 13;
+			this->gb_function->TabStop = false;
+			this->gb_function->Text = L"Function select";
+			// 
+			// rb_record
+			// 
+			this->rb_record->AutoSize = true;
+			this->rb_record->Checked = true;
+			this->rb_record->Location = System::Drawing::Point(69, 22);
+			this->rb_record->Name = L"rb_record";
+			this->rb_record->Size = System::Drawing::Size(67, 20);
+			this->rb_record->TabIndex = 0;
+			this->rb_record->Text = L"Record";
+			this->rb_record->UseVisualStyleBackColor = true;
+			// 
+			// rb_fuzzy
+			// 
+			this->rb_fuzzy->AutoSize = true;
+			this->rb_fuzzy->Location = System::Drawing::Point(6, 22);
+			this->rb_fuzzy->Name = L"rb_fuzzy";
+			this->rb_fuzzy->Size = System::Drawing::Size(57, 20);
+			this->rb_fuzzy->TabIndex = 0;
+			this->rb_fuzzy->Text = L"Fuzzy";
+			this->rb_fuzzy->UseVisualStyleBackColor = true;
+			// 
+			// rb_play
+			// 
+			this->rb_play->AutoSize = true;
+			this->rb_play->Location = System::Drawing::Point(142, 22);
+			this->rb_play->Name = L"rb_play";
+			this->rb_play->Size = System::Drawing::Size(49, 20);
+			this->rb_play->TabIndex = 0;
+			this->rb_play->Text = L"Play";
+			this->rb_play->UseVisualStyleBackColor = true;
+			// 
 			// TopForm
 			// 
 			this->AutoScaleDimensions = System::Drawing::SizeF(7, 16);
 			this->AutoScaleMode = System::Windows::Forms::AutoScaleMode::Font;
-			this->ClientSize = System::Drawing::Size(297, 228);
+			this->ClientSize = System::Drawing::Size(297, 287);
+			this->Controls->Add(this->gb_function);
 			this->Controls->Add(this->gb_mouse_speed);
 			this->Controls->Add(this->gb_mouse_range);
 			this->Controls->Add(this->TopToolStrip);
@@ -429,6 +482,8 @@ namespace MouseHangUp {
 			(cli::safe_cast<System::ComponentModel::ISupportInitialize^>(this->SpeedTrackBar))->EndInit();
 			this->gb_mouse_range->ResumeLayout(false);
 			this->gb_mouse_speed->ResumeLayout(false);
+			this->gb_function->ResumeLayout(false);
+			this->gb_function->PerformLayout();
 			this->ResumeLayout(false);
 			this->PerformLayout();
 
@@ -441,7 +496,9 @@ namespace MouseHangUp {
 	private: System::Void Process_backgroundWorker_RunWorkerCompleted(System::Object^ sender, System::ComponentModel::RunWorkerCompletedEventArgs^ e);
 	public: System::Void Start_Process_backgroundWorker();
 	public: System::Void Interrupt_Process_backgroundWorker();
-	private: System::Void Mouse_Fuzzy_Control_function(int process_time);
+	private: System::Void Mouse_Fuzzy_Control_function();
+	private: System::Void Mouse_Record_function(std::vector<int>& x_axis, std::vector<int>& y_axis);
+	private: System::Void Mouse_Play_function(std::vector<int>& x_axis, std::vector<int>& y_axis);
 	private: System::Void btn_start_Click(System::Object^ sender, System::EventArgs^ e);
 	private: System::Void Setting_time_transfer();
 	private: System::Void btn_increase_sec_low_Click(System::Object^ sender, System::EventArgs^ e);

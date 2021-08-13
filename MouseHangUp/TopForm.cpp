@@ -1,6 +1,9 @@
 #include "TopForm.h"
 namespace MouseHangUp 
 {
+	std::vector<int> x_axis;
+	std::vector<int> y_axis;
+	//UI control event
 	System::Void TopForm::btn_start_Click(System::Object^ sender, System::EventArgs^ e) 
 	{
 		Start_Process_backgroundWorker();
@@ -13,7 +16,8 @@ namespace MouseHangUp
 	{
 		this->lb_status->Text = "Speed:" + this->SpeedTrackBar->Value;
 	}
-	System::Void TopForm::Mouse_Fuzzy_Control_function(int process_time)
+	//Algorithm
+	System::Void TopForm::Mouse_Fuzzy_Control_function()
 	{
 		
 		int x_set, y_set;
@@ -26,6 +30,7 @@ namespace MouseHangUp
 		bool turn_back = true;
 		int random_val = this->mouse_random_value;
 		int speed = this->mouse_process_speed;
+		int process_time = this->Program_process_time;
 		Random^ rnd_x = gcnew Random();
 		System::Threading::Thread::Sleep(50);//需間隔15ms以上 random seed 才會不同
 		Random^ rnd_y = gcnew Random();
@@ -79,8 +84,81 @@ namespace MouseHangUp
 		}
 		
 	}
+	System::Void TopForm::Mouse_Record_function(std::vector<int> &x_axis, std::vector<int> &y_axis)
+	{
+		int percentage;
+		int now_time;
+		int time_left;
+		int speed = this->mouse_process_speed;
+		
+		int process_time = this->Program_process_time;
+		System::Diagnostics::Stopwatch^ loop_timer = gcnew System::Diagnostics::Stopwatch;
+		//Remote
+		loop_timer->Reset();
+		loop_timer->Start();
+		while (!this->Process_backgroundWorker->CancellationPending && loop_timer->Elapsed.TotalMilliseconds <= process_time)
+		{
+			POINT position;
+			IOControl::GetMousePosition(&position);
+			x_axis.push_back(position.x);
+			y_axis.push_back(position.y);
+			now_time = loop_timer->Elapsed.TotalMilliseconds;
+			time_left = (process_time - now_time) / 1000;//sec
+			this->lb_status->Invoke(this->UI_Update_LB_Text_Control, this->lb_status, "Ongoing:(" + (time_left / 3600).ToString("00") + ":" + ((time_left % 3600) / 60).ToString("00") + ":" + ((time_left % 3600) % 60).ToString("00") + ")");
+
+			percentage = (now_time * 100) / process_time;
+
+			this->Process_backgroundWorker->ReportProgress(percentage, "Get:(" + position.x + "," + position.y + ")");
+
+			System::Threading::Thread::Sleep(20 * (10 - speed));
+			//mouse_event(MOUSEEVENTF_LEFTDOWN, x_set, y_set, 0, 0);
+		}
+		loop_timer->Stop();
+		
+		if (loop_timer->Elapsed.TotalMilliseconds > process_time)
+		{
+			this->Process_backgroundWorker->ReportProgress(100, "Record finish");
+		}
+	}
+	System::Void TopForm::Mouse_Play_function(std::vector<int>& x_axis, std::vector<int>& y_axis) 
+	{
+		int percentage;
+		int now_time;
+		int time_left;
+		int speed = this->mouse_process_speed;
+		int set_num = 0;
+		int process_time = this->Program_process_time;
+		System::Diagnostics::Stopwatch^ loop_timer = gcnew System::Diagnostics::Stopwatch;
+		//play
+		loop_timer->Reset();
+		loop_timer->Start();
+		while (!this->Process_backgroundWorker->CancellationPending && loop_timer->Elapsed.TotalMilliseconds <= process_time && set_num < x_axis.size())
+		{
+			IOControl::SetMousePosition(x_axis[set_num], y_axis[set_num]);
+			now_time = loop_timer->Elapsed.TotalMilliseconds;
+			time_left = (process_time - now_time) / 1000;//sec
+			this->lb_status->Invoke(this->UI_Update_LB_Text_Control, this->lb_status, "Ongoing:(" + (time_left / 3600).ToString("00") + ":" + ((time_left % 3600) / 60).ToString("00") + ":" + ((time_left % 3600) % 60).ToString("00") + ")");
+
+			percentage = (now_time * 100) / process_time;
+
+			this->Process_backgroundWorker->ReportProgress(percentage, "Set:(" + x_axis[set_num] + "," + y_axis[set_num] + ")");
+
+			System::Threading::Thread::Sleep(20 * (10 - speed));
+			set_num++;
+		}
+
+		loop_timer->Stop();
+
+
+		if (set_num == x_axis.size())
+		{
+			this->Process_backgroundWorker->ReportProgress(100, "Play finish");
+		}
+	}
+	//background worker control function
 	System::Void TopForm::Start_Process_backgroundWorker() 
 	{
+
 		this->btn_start->Enabled = false;
 		this->btn_start->BackColor = System::Drawing::Color::Orange;
 		this->gb_time_set->Enabled = false;
@@ -91,6 +169,9 @@ namespace MouseHangUp
 		if (this->Process_backgroundWorker->IsBusy != true) {
 			this->Process_backgroundWorker->RunWorkerAsync();
 		}
+
+
+
 	}
 	System::Void TopForm::Interrupt_Process_backgroundWorker()
 	{
@@ -110,7 +191,21 @@ namespace MouseHangUp
 	//background worker
 	System::Void TopForm::Process_backgroundWorker_DoWork(System::Object^ sender, System::ComponentModel::DoWorkEventArgs^ e) 
 	{
-		Mouse_Fuzzy_Control_function(this->Program_process_time);
+		if (this->rb_fuzzy->Checked)
+		{
+			Mouse_Fuzzy_Control_function();
+		}
+		else if(this->rb_record->Checked)
+		{
+			x_axis.clear();
+			y_axis.clear();
+			Mouse_Record_function(x_axis,y_axis);
+		}
+		else if (this->rb_play->Checked) 
+		{
+			Mouse_Play_function(x_axis, y_axis);
+		}
+
 	}
 	System::Void TopForm::Process_backgroundWorker_ProgressChanged(System::Object^ sender, System::ComponentModel::ProgressChangedEventArgs^ e)
 	{
