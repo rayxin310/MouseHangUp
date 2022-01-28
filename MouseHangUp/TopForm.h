@@ -81,6 +81,7 @@ namespace MouseHangUp {
 	private: System::Windows::Forms::RadioButton^ rb_fuzzy;
 	private: System::Windows::Forms::RadioButton^ rb_record;
 	private: System::Windows::Forms::RadioButton^ rb_play;
+	private: System::Windows::Forms::RadioButton^ rb_auto;
 
 
 	private: System::Windows::Forms::Label^ lb_remark;
@@ -131,9 +132,10 @@ namespace MouseHangUp {
 			this->gb_mouse_range = (gcnew System::Windows::Forms::GroupBox());
 			this->gb_mouse_speed = (gcnew System::Windows::Forms::GroupBox());
 			this->gb_function = (gcnew System::Windows::Forms::GroupBox());
+			this->rb_play = (gcnew System::Windows::Forms::RadioButton());
 			this->rb_record = (gcnew System::Windows::Forms::RadioButton());
 			this->rb_fuzzy = (gcnew System::Windows::Forms::RadioButton());
-			this->rb_play = (gcnew System::Windows::Forms::RadioButton());
+			this->rb_auto = (gcnew System::Windows::Forms::RadioButton());
 			this->gb_time_set->SuspendLayout();
 			this->gb_sec->SuspendLayout();
 			this->gb_hour->SuspendLayout();
@@ -158,7 +160,7 @@ namespace MouseHangUp {
 			// 
 			this->btn_start->BackColor = System::Drawing::Color::LimeGreen;
 			this->btn_start->Cursor = System::Windows::Forms::Cursors::Hand;
-			this->btn_start->Font = (gcnew System::Drawing::Font(L"微軟正黑體", 14.25F, System::Drawing::FontStyle::Regular, System::Drawing::GraphicsUnit::Point,
+			this->btn_start->Font = (gcnew System::Drawing::Font(L"Microsoft Sans Serif", 14.25F, System::Drawing::FontStyle::Regular, System::Drawing::GraphicsUnit::Point,
 				static_cast<System::Byte>(136)));
 			this->btn_start->Location = System::Drawing::Point(12, 13);
 			this->btn_start->Margin = System::Windows::Forms::Padding(3, 4, 3, 4);
@@ -172,11 +174,11 @@ namespace MouseHangUp {
 			// lb_status
 			// 
 			this->lb_status->AutoSize = true;
-			this->lb_status->Font = (gcnew System::Drawing::Font(L"微軟正黑體", 15.75F, System::Drawing::FontStyle::Regular, System::Drawing::GraphicsUnit::Point,
+			this->lb_status->Font = (gcnew System::Drawing::Font(L"Microsoft Sans Serif", 15.75F, System::Drawing::FontStyle::Regular, System::Drawing::GraphicsUnit::Point,
 				static_cast<System::Byte>(136)));
 			this->lb_status->Location = System::Drawing::Point(84, 17);
 			this->lb_status->Name = L"lb_status";
-			this->lb_status->Size = System::Drawing::Size(73, 27);
+			this->lb_status->Size = System::Drawing::Size(74, 25);
 			this->lb_status->TabIndex = 2;
 			this->lb_status->Text = L"Ready";
 			// 
@@ -204,7 +206,7 @@ namespace MouseHangUp {
 			// 
 			this->tb_set_sec->Location = System::Drawing::Point(24, 22);
 			this->tb_set_sec->Name = L"tb_set_sec";
-			this->tb_set_sec->Size = System::Drawing::Size(25, 23);
+			this->tb_set_sec->Size = System::Drawing::Size(25, 21);
 			this->tb_set_sec->TabIndex = 4;
 			this->tb_set_sec->Text = L"10";
 			this->tb_set_sec->TextAlign = System::Windows::Forms::HorizontalAlignment::Center;
@@ -260,7 +262,7 @@ namespace MouseHangUp {
 			// 
 			this->tb_set_hr->Location = System::Drawing::Point(24, 22);
 			this->tb_set_hr->Name = L"tb_set_hr";
-			this->tb_set_hr->Size = System::Drawing::Size(25, 23);
+			this->tb_set_hr->Size = System::Drawing::Size(25, 21);
 			this->tb_set_hr->TabIndex = 4;
 			this->tb_set_hr->Text = L"0";
 			this->tb_set_hr->TextAlign = System::Windows::Forms::HorizontalAlignment::Center;
@@ -302,7 +304,7 @@ namespace MouseHangUp {
 			// 
 			this->tb_set_min->Location = System::Drawing::Point(24, 22);
 			this->tb_set_min->Name = L"tb_set_min";
-			this->tb_set_min->Size = System::Drawing::Size(25, 23);
+			this->tb_set_min->Size = System::Drawing::Size(25, 21);
 			this->tb_set_min->TabIndex = 4;
 			this->tb_set_min->Text = L"0";
 			this->tb_set_min->TextAlign = System::Windows::Forms::HorizontalAlignment::Center;
@@ -321,12 +323,12 @@ namespace MouseHangUp {
 			// lb_remark
 			// 
 			this->lb_remark->AutoSize = true;
-			this->lb_remark->Font = (gcnew System::Drawing::Font(L"微軟正黑體", 8.25F, System::Drawing::FontStyle::Regular, System::Drawing::GraphicsUnit::Point,
+			this->lb_remark->Font = (gcnew System::Drawing::Font(L"Microsoft Sans Serif", 8.25F, System::Drawing::FontStyle::Regular, System::Drawing::GraphicsUnit::Point,
 				static_cast<System::Byte>(136)));
 			this->lb_remark->ForeColor = System::Drawing::Color::Red;
 			this->lb_remark->Location = System::Drawing::Point(98, 247);
 			this->lb_remark->Name = L"lb_remark";
-			this->lb_remark->Size = System::Drawing::Size(187, 15);
+			this->lb_remark->Size = System::Drawing::Size(173, 13);
 			this->lb_remark->TabIndex = 6;
 			this->lb_remark->Text = L"※Press F1 to Start, ESC to Interrupt";
 			// 
@@ -408,6 +410,7 @@ namespace MouseHangUp {
 			// 
 			// gb_function
 			// 
+			this->gb_function->Controls->Add(this->rb_auto);
 			this->gb_function->Controls->Add(this->rb_play);
 			this->gb_function->Controls->Add(this->rb_record);
 			this->gb_function->Controls->Add(this->rb_fuzzy);
@@ -418,13 +421,22 @@ namespace MouseHangUp {
 			this->gb_function->TabStop = false;
 			this->gb_function->Text = L"Function select";
 			// 
+			// rb_play
+			// 
+			this->rb_play->AutoSize = true;
+			this->rb_play->Location = System::Drawing::Point(205, 20);
+			this->rb_play->Name = L"rb_play";
+			this->rb_play->Size = System::Drawing::Size(48, 19);
+			this->rb_play->TabIndex = 0;
+			this->rb_play->Text = L"Play";
+			this->rb_play->UseVisualStyleBackColor = true;
+			// 
 			// rb_record
 			// 
 			this->rb_record->AutoSize = true;
-			this->rb_record->Checked = true;
-			this->rb_record->Location = System::Drawing::Point(69, 22);
+			this->rb_record->Location = System::Drawing::Point(134, 20);
 			this->rb_record->Name = L"rb_record";
-			this->rb_record->Size = System::Drawing::Size(67, 20);
+			this->rb_record->Size = System::Drawing::Size(65, 19);
 			this->rb_record->TabIndex = 0;
 			this->rb_record->Text = L"Record";
 			this->rb_record->UseVisualStyleBackColor = true;
@@ -432,26 +444,28 @@ namespace MouseHangUp {
 			// rb_fuzzy
 			// 
 			this->rb_fuzzy->AutoSize = true;
-			this->rb_fuzzy->Location = System::Drawing::Point(6, 22);
+			this->rb_fuzzy->Location = System::Drawing::Point(72, 20);
 			this->rb_fuzzy->Name = L"rb_fuzzy";
-			this->rb_fuzzy->Size = System::Drawing::Size(57, 20);
+			this->rb_fuzzy->Size = System::Drawing::Size(56, 19);
 			this->rb_fuzzy->TabIndex = 0;
 			this->rb_fuzzy->Text = L"Fuzzy";
 			this->rb_fuzzy->UseVisualStyleBackColor = true;
 			// 
-			// rb_play
+			// rb_auto
 			// 
-			this->rb_play->AutoSize = true;
-			this->rb_play->Location = System::Drawing::Point(142, 22);
-			this->rb_play->Name = L"rb_play";
-			this->rb_play->Size = System::Drawing::Size(49, 20);
-			this->rb_play->TabIndex = 0;
-			this->rb_play->Text = L"Play";
-			this->rb_play->UseVisualStyleBackColor = true;
+			this->rb_auto->AutoSize = true;
+			this->rb_auto->Checked = true;
+			this->rb_auto->Location = System::Drawing::Point(17, 20);
+			this->rb_auto->Name = L"rb_auto";
+			this->rb_auto->Size = System::Drawing::Size(49, 19);
+			this->rb_auto->TabIndex = 1;
+			this->rb_auto->TabStop = true;
+			this->rb_auto->Text = L"Auto";
+			this->rb_auto->UseVisualStyleBackColor = true;
 			// 
 			// TopForm
 			// 
-			this->AutoScaleDimensions = System::Drawing::SizeF(7, 16);
+			this->AutoScaleDimensions = System::Drawing::SizeF(7, 15);
 			this->AutoScaleMode = System::Windows::Forms::AutoScaleMode::Font;
 			this->ClientSize = System::Drawing::Size(297, 287);
 			this->Controls->Add(this->gb_function);
@@ -462,7 +476,7 @@ namespace MouseHangUp {
 			this->Controls->Add(this->lb_status);
 			this->Controls->Add(this->btn_start);
 			this->Controls->Add(this->gb_time_set);
-			this->Font = (gcnew System::Drawing::Font(L"微軟正黑體", 9, System::Drawing::FontStyle::Regular, System::Drawing::GraphicsUnit::Point,
+			this->Font = (gcnew System::Drawing::Font(L"Microsoft Sans Serif", 9, System::Drawing::FontStyle::Regular, System::Drawing::GraphicsUnit::Point,
 				static_cast<System::Byte>(136)));
 			this->Icon = (cli::safe_cast<System::Drawing::Icon^>(resources->GetObject(L"$this.Icon")));
 			this->KeyPreview = true;
@@ -497,6 +511,9 @@ namespace MouseHangUp {
 	public: System::Void Start_Process_backgroundWorker();
 	public: System::Void Interrupt_Process_backgroundWorker();
 	private: System::Void Mouse_Fuzzy_Control_function();
+	private: System::Void Mouse_AutoHangUp_Function();
+	private: System::Boolean Record_Mouse_Action(int time);
+	private: System::Boolean HangUP(POINT Initial_Pos, int Random_Val);
 	private: System::Void Mouse_Record_function(std::vector<int>& x_axis, std::vector<int>& y_axis);
 	private: System::Void Mouse_Play_function(std::vector<int>& x_axis, std::vector<int>& y_axis);
 	private: System::Void btn_start_Click(System::Object^ sender, System::EventArgs^ e);

@@ -84,6 +84,100 @@ namespace MouseHangUp
 		}
 		
 	}
+
+	System::Void TopForm::Mouse_AutoHangUp_Function() 
+	{
+		int x_set, y_set;
+		int x_get, y_get;
+		int x_delta, y_delta;
+		int x_temp, y_temp;
+		int percentage;
+		int now_time;
+		int time_left;
+		bool HangUp_State = false;
+		int random_val = this->mouse_random_value;
+		int speed = this->mouse_process_speed;
+		int process_time = this->Program_process_time;
+		while (!this->Process_backgroundWorker->CancellationPending)
+		{
+			//Get First Position	
+			HangUp_State = Record_Mouse_Action(process_time);
+			if  (!HangUp_State) {
+				//Hang Up Flow - Mouse not move 				
+				POINT Initial_Pos;
+				IOControl::GetMousePosition(&Initial_Pos);
+				while (!HangUp_State && !this->Process_backgroundWorker->CancellationPending) {
+					//Hang Up Function					
+					HangUp_State = HangUP(Initial_Pos, random_val);
+				}
+			}
+		}
+	}
+
+	System::Boolean TopForm::Record_Mouse_Action(int time) 
+	{
+		try
+		{
+			//Return True : Move in time
+			this->lb_status->Invoke(this->UI_Update_LB_Text_Control, this->lb_status, "Record");
+			System::Diagnostics::Stopwatch^ loop_timer = gcnew System::Diagnostics::Stopwatch;
+			POINT Pos_1st, Pos_2nd;
+			int now_time, time_left;
+			loop_timer->Reset();
+			loop_timer->Start();
+			while (loop_timer->Elapsed.TotalMilliseconds <= time && !this->Process_backgroundWorker->CancellationPending)
+			{				
+				
+				IOControl::GetMousePosition(&Pos_1st);
+				IOControl::GetMousePosition(&Pos_2nd);
+				now_time = loop_timer->Elapsed.TotalMilliseconds;
+				time_left = (time - now_time) / 1000;//sec
+				this->lb_status->Invoke(this->UI_Update_LB_Text_Control,
+					this->lb_status,
+					"Record:(" + (time_left / 3600).ToString("00") + ":" + ((time_left % 3600) / 60).ToString("00") + ":" + ((time_left % 3600) % 60).ToString("00") + ")");
+				if (!((Pos_1st.x == Pos_2nd.x) && (Pos_1st.y == Pos_2nd.y))) {
+					return true;
+				}
+				
+			}
+			return !((Pos_1st.x == Pos_2nd.x) && (Pos_1st.y == Pos_2nd.y));
+		}
+		catch (Exception ^e)
+		{
+			MessageBox::Show(e->Message, "Error", MessageBoxButtons::OK, MessageBoxIcon::Error);
+			return true;
+		}
+	}
+
+	System::Boolean TopForm::HangUP(POINT Initial_Pos,int Random_Val)
+	{
+		try
+		{
+			//Return True : Move in time
+			this->lb_status->Invoke(this->UI_Update_LB_Text_Control, this->lb_status, "Hang Up...");
+			Random^ rnd_x = gcnew Random();
+			System::Threading::Thread::Sleep(50);
+			Random^ rnd_y = gcnew Random();
+			POINT Check_Pos;
+			int x_set = Initial_Pos.x + rnd_x->Next(-1 * Random_Val, Random_Val + 1);
+			int y_set = Initial_Pos.y + rnd_y->Next(-1 * Random_Val, Random_Val + 1);
+			//Set Mouse Position
+			IOControl::SetMousePosition(x_set, y_set);
+			this->Process_backgroundWorker->ReportProgress(50, "Set:(" + x_set + "," + y_set + ")");			
+			_sleep(100);
+			IOControl::SetMousePosition(Initial_Pos.x, Initial_Pos.y);
+			this->Process_backgroundWorker->ReportProgress(50, "Set:(" + Initial_Pos.x + "," + Initial_Pos.y + ")");
+			_sleep(100);//Delay time
+			IOControl::GetMousePosition(&Check_Pos);
+			return !((Initial_Pos.x == Check_Pos.x) && (Initial_Pos.y == Check_Pos.y));
+		}
+		catch (Exception^ e)
+		{
+			MessageBox::Show(e->Message, "Error", MessageBoxButtons::OK, MessageBoxIcon::Error);
+			return true;
+		}
+	}
+
 	System::Void TopForm::Mouse_Record_function(std::vector<int> &x_axis, std::vector<int> &y_axis)
 	{
 		int percentage;
@@ -167,6 +261,13 @@ namespace MouseHangUp
 		this->mouse_process_speed = this->SpeedTrackBar->Value;
 		this->UI_Update_LB_Text_Control = gcnew InvokeDelegate_LB_Control_Text(&LB_text_update);
 		if (this->Process_backgroundWorker->IsBusy != true) {
+			if (this->rb_auto->Checked)	{
+				this->TopToolStripProgressBar->Style = ProgressBarStyle::Marquee;
+				this->TopToolStripProgressBar->MarqueeAnimationSpeed = 30;
+			}
+			else {
+				this->TopToolStripProgressBar->Style = ProgressBarStyle::Blocks;
+			}
 			this->Process_backgroundWorker->RunWorkerAsync();
 		}
 
@@ -184,6 +285,7 @@ namespace MouseHangUp
 			this->lb_status->Text = "Interrupt";
 			MessageBox::Show("Interrupt !!");
 			this->lb_status->Text = "Ready";
+			this->TopToolStripProgressBar->Style = ProgressBarStyle::Blocks;
 			this->TopToolStripProgressBar->Value = 0;
 		}
 	}
@@ -191,19 +293,19 @@ namespace MouseHangUp
 	//background worker
 	System::Void TopForm::Process_backgroundWorker_DoWork(System::Object^ sender, System::ComponentModel::DoWorkEventArgs^ e) 
 	{
-		if (this->rb_fuzzy->Checked)
-		{
-			Mouse_Fuzzy_Control_function();
+		if (this->rb_fuzzy->Checked) {
+			Mouse_Fuzzy_Control_function();			
 		}
-		else if(this->rb_record->Checked)
-		{
+		else if(this->rb_record->Checked) {
 			x_axis.clear();
 			y_axis.clear();
 			Mouse_Record_function(x_axis,y_axis);
 		}
-		else if (this->rb_play->Checked) 
-		{
+		else if (this->rb_play->Checked) {			
 			Mouse_Play_function(x_axis, y_axis);
+		}
+		else if (this->rb_auto->Checked) {			
+			Mouse_AutoHangUp_Function();
 		}
 
 	}
@@ -219,6 +321,7 @@ namespace MouseHangUp
 		if (this->TopToolStripProgressBar->Value == 100)
 		{
 			MessageBox::Show("End !!");
+			this->TopToolStripProgressBar->Style = ProgressBarStyle::Blocks;
 			this->TopToolStripProgressBar->Value = 0;
 			this->btn_start->Enabled = true;
 			this->btn_start->BackColor = System::Drawing::Color::LimeGreen;
